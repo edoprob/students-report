@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/bootstrap.css">
+    <link rel="stylesheet" href="assets/self-style.css">
+
+    <title>Document</title>
+  </head>
+  <body>
+	  	<div class="container">
+		  	<hr>
+		  	<h4>Questão 03</h4>
+		  	<p>Crie um componente que possua um botão criar relatório que quando acionado deve imprimir um relatório de resultados da disciplina javascript para 20 alunos, no formato de tabela.
+			As notas deverão ser números inteiros entre 0 e 100, criadas aleatoriamente;
+			Cada aluno deve ser representado por um registro composto por matricula e nota
+			Os registros devem ser armazenados em um array;
+			A impressão do relatório deve ter:
+			os resultados mostrados linha a linha no formato "Aluno xxxx - Nota yy [(A/RE)PROVADO]"; e
+			um rodapé com estatística final no formato "APROVADOS: XX (xx%)  |  REPROVADOS: YY (yy%)"</p>
+
+			<div class="card">
+				<div class="card-header">
+					<form action="#">
+						<div class="form-group">
+							<label for="selector">Defina o número de alunos que terá no relatório:</label><br><br>
+							<select style="max-width: 200px;" class="form-control" id="selector">
+								<option selected value="10">10</option>
+								<option value="20">20</option>
+								<option value="30">30</option>
+								<option value="40">40</option>
+								<option value="50">50</option>
+								<option value="60">60</option>
+							</select><br>
+							<button onclick="generateReport()" type="button" class="btn btn-dark">Gerar relatório</button>
+						</div>						
+					</form>
+				</div>
+				<div class="card-body">
+					<hr>
+					<h3 style="text-align: center">Relatório (Média: 70)</h3>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Nome & Matrícula</th>
+								<th>Situação</th>
+							</tr>
+						</thead>
+						<tbody id="tableList">
+
+						</tbody>
+					</table>
+					<b><h4 style="text-align: center;color: black" id="result"></h4></b>
+					<hr>
+				</div>
+			</div>
+
+		</div>
+    
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="assets/jquery.js"></script>
+    <script src="assets/popper.js"></script>
+    <script src="assets/bootstrap.js"></script>
+    <script type="text/javascript">
+
+    	function generateReport(){
+
+    		const tbody = document.getElementById("tableList");
+    		const result = document.getElementById("result");
+
+    		//deleting all the elements on table
+			while(tbody.firstChild) {
+	        	tbody.removeChild(tbody.firstChild);
+	        }
+	    	
+	    	nStudents = document.getElementById("selector").value;
+	    	const classroom = [];
+
+	    	// aleatory names
+	    	const randomNames = ['Helena', 'Miguel', 'Alice', 'Arthur', 'Laura', 'Manuela', 'Bernardo', 'Davi', 'Valentina', 'Isabella', 'Júlia', 'Luiza', 'Lívia', 'Cecília', 'Maria Júlia', 'Maria Clara', 'Lucas', 'Isadora', 'João Pedro', 'Melissa', 'Pietro', 'Benjamin', 'Leonardo', 'Rafael', 'Liz', 'Catarina', 'Agatha', 'Alícia', 'Sarah', 'Enrico', 'Cauã', 'Antônio', 'Isabelly', 'Lavínia', 'Isaac', 'Clara', 'Marina', 'Rafaela', 'Maria Helena', 'Gabriela', 'Vinícius', 'Calebe', 'Gael', 'Elisa', 'Isis', 'Maitê', 'Emanuelly', 'Esther', 'Vicente', 'Daniel', 'Vitor', 'Emanuel', 'João', 'Rebeca', 'Bento', 'Bryan', 'Eduardo', 'Maria Cecília', 'Caio', 'Maria Alice'];
+
+	    	// aleatory registration numbers
+	    	const randomReg = [];
+	    	var j = 1;
+	    	for (let i = randomNames.length - 1; i >= 0; i--) {
+	    		randomReg.push("202001AB"+("00" + j).slice(-3));
+	    		j++
+	    	}
+
+	    	// aleatory grades
+	    	const randomGrades = [];
+	    	for (let i = randomNames.length - 1; i >= 0; i--) {
+	    		randomGrades.push(Math.floor(Math.random() * 101))
+	    	}
+
+	    	j = 0;
+	    	// filling the classroom
+	    	for (let i = randomNames.length - 1; i >= 0; i--) {
+	    		classroom.push([randomNames[j], randomReg[j], randomGrades[j]]);
+	    		j++
+	    	}
+
+	    	// shuffle function
+	    	function shuffle(arr){
+	    		for (let i = arr.length - 1; i >= 0; i--) {
+	    			let j = Math.floor(Math.random() * i)
+	    			let temp = arr[i];
+	    			arr[i] = arr[j];
+	    			arr[j] = temp;
+	    		}
+	    	}
+
+	    	// randomizer
+	    	shuffle(classroom);
+
+	    	// get the first 20 names
+			const list = classroom.slice(0, nStudents);
+
+			j = 0;
+			var apr = 0;
+			var rep = 0;
+
+			//defining elements on table
+			for (let i = list.length - 1; i >= 0; i--) {
+
+				let row = document.createElement("tr");
+				let cell1 = document.createElement("td");
+				let cell2 = document.createElement("td");
+				cell1.innerHTML = `${list[j][0]} - ${list[j][1]}`;
+
+				// if approved or not approved
+				list[j][2] >= 70 ? apr++ : rep++;
+				let situation = list[j][2] >= 70 ? "<span style='color:green'>[ APROVADO ]<span>" : "<span style='color:red'>[ REPROVADO ]<span>";
+				cell2.innerHTML = "Nota: "+list[j][2]+" - "+situation;
+
+				// creating!
+				row.appendChild(cell1);
+				row.appendChild(cell2);
+				tbody.appendChild(row);
+				j++
+			}
+
+			//calculating percentage
+			const perApr = ((100 * apr) / nStudents).toFixed(1);
+			const perRep = ((100 * rep) / nStudents).toFixed(1);
+
+			const percents = `APROVADOS: ${apr} (${perApr}%) | REPROVADOS: ${rep} (${perRep}%)`;
+			result.innerHTML = percents;
+    	}
+
+
+
+    </script>
+  </body>
+</html>
